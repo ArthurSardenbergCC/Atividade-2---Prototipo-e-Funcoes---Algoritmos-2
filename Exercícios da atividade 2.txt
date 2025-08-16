@@ -1,0 +1,203 @@
+Escopo de variáveis e protótipos e interfaces de funções - páginas 13 e 14
+
+1)
+A linha 21 exibe a string que foi inserida pela instrução "getline" na linha 19 sem nenhuma modificação, pois a impressão feita na linha 20 não altera o valor da cadeia "aluno".
+
+Já a linha 23 exibe a string com todas as inicias em letras maiúsculas. Tal diferença ocorre devido ao processamento da linha 22, o qual atribui à variável "aluno" o valor retornado pela chamada da função "iniciais". Esta possui um bloco de código que modifica uma posição da string se ela for a inicial de uma palavra e minúscula, logo a linha 23 sempre resultará em uma impressão de uma cadeia com essas características.
+
+Caso a linha 23 consistisse em uma impressão da variável "nome", o programa não seria executado já que tal variável é um parâmetro da função "iniciais" e, portanto, local a essa parte do código. Pela tentativa de usar uma variável local como global, o algoritmo não seria compilado.
+
+
+2)
+
+Para diferenciar uma função com retorno de uma sem retorno basta analisar o primeiro elemento do protótipo (ou assinatura) da função. Caso ele seja a palavra "void", a função não terá retorno e, caso for algum tipo primitivo do C++, a função terá um retorno.
+
+O retorno da função "aleat" está sendo usado de três formas: um número a ser impresso na função principal, valor a ser atribuído à variável "x" em um processamento e um número a ser comparado em uma estrutura condicional. Já o retorno da função "dobro" serve como o outro elemento dessa condicional, a fim de que, caso ele seja maior que o retorno da outra função, a função "mostrar_dobro" seja chamada.
+
+O parâmetro da função "dobro" recebe o argumento "x", o qual recebe o valor retornado pela função "aleat". O parâmetro da função "mostra_dobro", por sua vez, também recebe o argumento "x", logo não mostrará o dobro do valor da variável "x" (situação que ocorreria caso o argumento fosse "num"), mas a própria variável "x".
+
+A implementação das funções pode ser feita da seguinte forma:
+#include <iostream>
+using namespace std;
+
+void bom_dia();
+int aleat();
+int dobro(int);
+void mostra_dobro(int);
+
+int main(){
+    int x = 0, num = 0;
+    bom_dia();
+    cout << aleat() << endl;
+    x = aleat();
+    num += dobro(x);
+    if (dobro(x) > dobro(aleat())){
+        mostra_dobro(x);
+    }
+    return 0;
+}
+
+void bom_dia (){
+    cout << "Bom dia!" << endl;
+}
+
+int aleat (){
+    int a = 0;
+    cin >> a;
+    return a;
+}
+
+int dobro (int numero){
+    return numero * 2;
+}
+
+void mostra_dobro (int numero_mostrar){
+    cout << numero_mostrar << endl;
+}
+
+Primeiro o terminal exibirá a mensagem "Bom dia!". Depois, como consequência da primeira chamada de "aleat", será pedido a entrada de um valor inteiro, o qual será mostrado no terminal. Em seguida, duas entradas serão requisitadas, a fim de determinar dois elementos que farão parte da estrutura condicional mostrada acima. Se a condição for verdadeira, uma quarta função é chamada para exibir o segundo valor introduzido no terminal.
+
+
+3)
+
+A primeira interface mostra a função "rand" que, ao ser utilizada, retornará um inteiro e demandará nenhum argumento para ser executada.
+
+A segunda interface mostra a função "srand" que, ao ser utilizada, não retornará nenhum valor e demandará como argumento um inteiro não-negativo (unsigned int) para o parâmetro "int".
+
+A terceira interface mostra a função "atoi" que, ao ser utilizada, demandará como argumento um array de caracteres (não pode ser a std::string) e retornará um inteiro cujo valor será composto pelos dígitos numéricos do array (este é percorrido pela função), sendo que a ordem dos números seguirá a ordem original dos caracteres e a conversão parará assim que o primeiro caractere não-numérico for encontrado.
+
+Comentários extras sobre a função "atoi":
+
+Essa função faz parte da biblioteca <cstdlib>, logo não precisa ser implementada na função, bastando apenas ser chamada.
+
+Ela recebe como argumento uma string de caracteres (array) terminadas em "\0" e percorre toda a cadeia até encontrar um caractere que não pode compor um número inteiro.
+
+A sua interface é "int atoi (const char * str)". O parâmetro possui três partes: const, char* e str.
+ 
+A primeira é um qualificador (significa "constante") que impede a modificação do dado para o qual o ponteiro aponta dentro da função, garantindo que a função "atoi" não altere o conteúdo da string que foi fornecida a ela, o que salvaguarda os dados originais. Ele indica para a função que a operação feita será somente de leitura do array.
+
+A segunda é um ponteiro para um caractere. Como as strings são arrays de caracteres que terminam no caractere nulo "\0", o ponteiro "char *" é utilizado como meio da função percorrer a string inteira, porque esse ponteiro está apontado para o primeiro caractere.
+
+A associação "const char *" indica que o caractere apontado pelo ponteiro não pode ser modificado, mas o valor do ponteiro em si pode ser alterado, assim como o ele pode apontar para outro caractere constante (const char, isto é, outra string).
+
+A terceira é o nome da variável do parâmetro, sendo apenas um identificador do parâmetro que, nesse caso, é a abreviação de "string".
+
+O parâmetro, portanto, é um ponteiro constante que permite a função ler a cadeia fornecida e realizar a conversão para inteiro sem, contudo, alterar o conteúdo da string original, mantendo sua integridade. 
+
+Não é possível fornecer uma "std::string" como argumento da função "atoi", pois essa palavra indica uma classe formada por um array de caracteres junto de outras informações (como o tamanho da string e o tamanho de sua alocação). Como a função espera um array de caracteres, fornecer a classe "std::string" resultará em erro de compilação.
+
+Exemplo 1 no C++:
+#include <iostream> // Required for std::cout
+#include <cstdlib>  // Required for atoi()
+
+int main() {
+    char str1[] = "12345";
+    char str2[] = "-678";
+    char str3[] = "90abc"; // 'abc' will be ignored
+    char str4[] = "  -50"; // Leading whitespace is ignored
+    char str5[] = "hello"; // No valid number, returns 0
+
+    int num1 = std::atoi(str1);
+    int num2 = std::atoi(str2);
+    int num3 = std::atoi(str3);
+    int num4 = std::atoi(str4);
+    int num5 = std::atoi(str5);
+
+    std::cout << "Converting \"" << str1 << "\": " << num1 << std::endl;
+    std::cout << "Converting \"" << str2 << "\": " << num2 << std::endl;
+    std::cout << "Converting \"" << str3 << "\": " << num3 << std::endl;
+    std::cout << "Converting \"" << str4 << "\": " << num4 << std::endl;
+    std::cout << "Converting \"" << str5 << "\": " << num5 << std::endl;
+
+    return 0;
+}
+A primeira saída será "12345", a segunda "-678", a terceira "90", a quarta "-50" (os espaços antes dos números são ignorados) e a quinta "0".
+
+O caractere "-" é incluído somente se vier antes da sequência numérica, pois se aparecer após algum número servirá somente para encerrar a função.
+O caractere "+" é ignorado se vier antes da sequência numérica, contudo se aparecer após algum número também encerrará a função.
+O caractere "0", se for o primeiro caractere da cadeia e sucedido por um número maior que ele, é ignorado na conversão como em "098".
+
+Exemplo 2 no C++:
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+int main (){
+    char teste[] = "teste9";
+    cout << atoi (teste) << endl;
+    return 0;
+}
+
+A saída será "0", pois a função termina sua execução assim que encontra o primeiro caractere não-numérico da string (com exceção de "-" e "+").
+
+
+Exemplo 3 no C++:
+#include <iostream>
+#include <cstdlib>
+using namespace std;
+
+int main (){
+    char teste[] = "  98 1";
+    cout << atoi (teste) << endl;
+    return 0;
+}
+
+A saída será "98", pois a função, após ignorar os primeiros espaços em branco, para a conversão assim que encontrar um caracetere não-númerico novamente. Os seguintes arrays também resultam em "98": "98-1" e "98*1". Se o primeiro caractere fosse "*" ("*98"), por exemplo, a função retornaria "0".  
+
+
+4)
+#include <iostream>
+using namespace std;
+
+int soma (int numero);
+
+int main (){
+    int numero = 0; // Variável global
+    cin >> numero;
+    cout << soma (numero) << endl;
+    return 0;
+}
+
+int soma (int numero){ // Variável local
+    if (numero > 5){
+        numero += 5; // Variável de bloco de código
+    } else {
+        numero++; // Variável de bloco de código
+    }
+    return numero;
+}
+
+
+5)
+#include <iostream>
+using namespace std;
+
+double calcularAreaRetangulo (double comprimento, double largura);
+
+int main (){ 
+    double base = 0, altura = 0;
+    cin >> base >> altura;
+    cout << "Área do retângulo: " << calcularAreaRetangulo (base, altura) << endl;
+    return 0;
+}
+
+double calcularAreaRetangulo (double comprimento, double largura){
+    return comprimento * largura;
+}
+
+
+6)
+#include <iostream>
+using namespace std;
+
+int gerarNumeroAleatorio ();
+
+int main (){ 
+    cout << "Número aleatório gerado: " << gerarNumeroAleatorio() << endl;
+    return 0;
+}
+
+int gerarNumeroAleatorio (){
+    srand (time (NULL));
+    return rand () % 100 + 1;
+}
